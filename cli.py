@@ -1,8 +1,8 @@
 import argparse
 
 from config import DEFAULT_NOTES_DIR, load_settings, set_editor, set_notes_path
-from note import (create_note, filter_notes_by_tags, list_all_tags, list_notes,
-                  open_note)
+from note import (create_note, filter_notes_by_tags, get_note_files,
+                  list_all_tags, list_notes, open_note)
 
 
 def main():

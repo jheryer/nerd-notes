@@ -57,12 +57,26 @@ def create_note(title, tags, notes_dir):
     print(f"Note created: {filepath}")
 
 
-def open_note(note_file, notes_dir, editor):
-    if not os.path.isabs(note_file):
-        note_file = os.path.join(notes_dir, note_file)
+def open_note(note_input, notes_dir, editor):
+    note_file = None
+
+    if note_input.isdigit():
+        index = int(note_input) - 1
+        files = get_note_files(notes_dir)
+        if index < 0 or index > len(files):
+            print("Invalid note index.")
+            return
+        note_input = files[index - 1]
+        note_file = os.path.join(notes_dir, files[index])
+    else:
+        note_file = note_input
+        if not os.path.isabs(note_input):
+            note_input = os.path.join(notes_dir, note_input)
+
     if not os.path.exists(note_file):
-        print(f"Note file not found: {note_file}")
+        print(f"Note file not found: {note_input}")
         return
+
     subprocess.run([editor, note_file])
 
 
@@ -70,16 +84,25 @@ def list_notes(notes_dir):
     """
     Lists all Markdown files in the specified notes directory.
     """
-    if not os.path.exists(notes_dir):
-        print("No notes directory found.")
-        return
-    files = sorted([f for f in os.listdir(notes_dir) if f.endswith(".md")])
-    if not files:
+    files = get_note_files(notes_dir)
+
+    if files is None or len(files) == 0:
         print("No notes found.")
     else:
         print("Notes in repository:")
-        for index, file in enumerate(files):
+        for index, file in enumerate(files, start=1):
             print(f"{index} {file}")
+
+
+def get_note_files(notes_dir) -> list:
+    """
+    Indexes all Markdown files in the specified notes directory.
+    """
+    if not os.path.exists(notes_dir):
+        print("No notes directory found.")
+        return []
+    files = sorted([f for f in os.listdir(notes_dir) if f.endswith(".md")])
+    return files
 
 
 def list_all_tags(notes_dir):
