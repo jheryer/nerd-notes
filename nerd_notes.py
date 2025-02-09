@@ -3,12 +3,12 @@ import argparse
 from config import (DEFAULT_NOTES_DIR, load_settings, print_config, set_editor,
                     set_git_remote, set_notes_path, set_openai_token)
 from note import (create_note, filter_notes_by_tags, get_note_file,
-                  list_all_tags, list_notes, open_note, summarize_note_file)
+                  list_all_tags, list_notes, open_note, print_tags,
+                  summarize_note_file)
 from sync import sync_notes
 
 
 def main():
-    # Load settings to determine the current notes directory.
     settings = load_settings()
     notes_dir = settings.get("notes_dir", DEFAULT_NOTES_DIR)
 
@@ -21,22 +21,10 @@ def main():
     parser_new.add_argument(
         "--title", type=str, required=True, help="Title of the note"
     )
+
     parser_new.add_argument(
         "--tags", type=str, nargs="*", help="Optional tags for the note"
     )
-
-    # parser_list = subparsers.add_parser("list", help="List all notes in the repository")
-
-    # parser_setpath = subparsers.add_parser(
-    #     "setpath", help="Set a new notes directory path"
-    # )
-    # parser_setpath.add_argument(
-    #     "--path", type=str, required=True, help="New path for the notes directory"
-    # )
-
-    # parser_tags = subparsers.add_parser(
-    #     "tags", help="List all unique tags across notes"
-    # )
 
     parser_filter = subparsers.add_parser(
         "filter", help="List notes that have all specified tag(s)"
@@ -45,19 +33,12 @@ def main():
         "--tags", type=str, nargs="+", required=True, help="Tag(s) to filter notes by"
     )
 
-    # parser_seteditor = subparsers.add_parser(
-    #     "seteditor", help="Set the default editor for opening notes"
-    # )
-    # parser_seteditor.add_argument(
-    #     "--editor",
-    #     type=str,
-    #     required=True,
-    #     help="Editor command (e.g., vim, nano, code)",
-    # )
-
     parser_open = subparsers.add_parser(
         "open", help="Open a note using the default editor"
     )
+
+    subparsers.add_parser("list", help="List all notes in the repository")
+
     parser_open.add_argument(
         "--file", type=str, required=True, help="Filename of the note to open"
     )
@@ -81,18 +62,6 @@ def main():
         required=True,
         help="Filename or index number of the note to summarize",
     )
-
-    # parser_settoken = subparsers.add_parser("settoken", help="Set the OpenAI API token")
-    # parser_settoken.add_argument(
-    #     "--token", type=str, required=True, help="OpenAI API token"
-    # )
-
-    # parser_setgit = subparsers.add_parser(
-    #     "setgit", help="Set the remote Git repository for syncing notes"
-    # )
-    # parser_setgit.add_argument(
-    #     "--repo", type=str, required=True, help="Remote Git repository URL"
-    # )
 
     parser_sync = subparsers.add_parser(
         "sync", help="Sync the notes directory to the remote Git repository"
@@ -145,13 +114,7 @@ def main():
     elif args.command == "tags":
 
         all_tags = list_all_tags(notes_dir)
-
-        if all_tags:
-            print("Unique tags found:")
-            for tag in all_tags:
-                print(f"- {tag}")
-        else:
-            print("No tags found.")
+        print_tags(all_tags)
 
     elif args.command == "filter":
 

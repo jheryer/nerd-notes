@@ -25,7 +25,7 @@ def create_note(title, tags, notes_dir):
 
     date_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     safe_title = sanitize_title(title)
-    filename = f"{date_str}-{safe_title}.md"
+    filename = f"{safe_title}-{date_str}.md"
     filepath = os.path.join(notes_dir, filename)
 
     if tags:
@@ -131,7 +131,19 @@ def get_note_files(notes_dir) -> list:
     return files
 
 
-def list_all_tags(notes_dir):
+def print_tags(tags):
+    """
+    Prints the list of tags.
+    """
+    if not tags:
+        print("No tags found.")
+    else:
+        print("Tags:")
+        for tag in tags:
+            print(f"- {tag}")
+
+
+def list_all_tags(notes_dir) -> list:
     """
     Iterates through all Markdown files and collects unique tags from the YAML front matter.
     Returns a sorted list of tags.
@@ -139,7 +151,7 @@ def list_all_tags(notes_dir):
     tags = set()
     if not os.path.exists(notes_dir):
         print("Notes directory not found.")
-        return tags
+        return []
     for filename in os.listdir(notes_dir):
         if filename.endswith(".md"):
             filepath = os.path.join(notes_dir, filename)
@@ -257,7 +269,7 @@ def summarize_note_file(note_file, openai_token):
                 },
                 {"role": "user", "content": prompt},
             ],
-            max_tokens=1500,
+            max_tokens=2000,
         )
         summary_text = response.choices[0].message.content
     except Exception as e:
