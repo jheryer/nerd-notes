@@ -74,7 +74,7 @@ nerd_notes/
 Run the CLI tool using Python:
 
 ```bash
-python nerd_notes.py <command> [options]
+ nerd_notes.py <command> [options]
 ```
 
 ### Commands
@@ -84,7 +84,7 @@ python nerd_notes.py <command> [options]
 Creates a new Markdown note with an optional list of tags.
 
 ```bash
-python nerd_notes.py new --title "Meeting Notes" --tags meeting project
+nerd_notes.py new --title "Meeting Notes" --tags meeting project
 ```
 
 #### List All Notes
@@ -92,7 +92,7 @@ python nerd_notes.py new --title "Meeting Notes" --tags meeting project
 Lists all notes in your repository with index numbers.
 
 ```bash
-python nerd_notes.py list
+nerd_notes.py list
 ```
 
 #### Open a Note
@@ -102,13 +102,13 @@ Opens a note in your default editor. You can specify the note by filename or by 
 - By filename:
 
   ```bash
-  python nerd_notes.py open --file "2025-02-08-Meeting-Notes.md"
+  nerd_notes.py open --file "2025-02-08-Meeting-Notes.md"
   ```
 
 - By index number:
 
   ```bash
-  python nerd_notes.py open --file 3
+  nerd_notes.py open --file 3
   ```
 
 #### View a Note
@@ -116,13 +116,13 @@ Opens a note in your default editor. You can specify the note by filename or by 
 Displays the note with Markdown rendering in your terminal using Rich.
 
 ```bash
-python nerd_notes.py view --file 2
+nerd_notes.py view --file 2
 ```
 
 or
 
 ```bash
-python nerd_notes.py view --file "2025-02-08-Meeting-Notes.md"
+nerd_notes.py view --file "2025-02-08-Meeting-Notes.md"
 ```
 
 #### Summarize a Note
@@ -132,13 +132,13 @@ Uses OpenAI GPT-4 to generate a summary and action items from the **Raw Notes**,
 > **Note:** Before summarizing, set your OpenAI API token using the settings command.
 
 ```bash
-python nerd_notes.py summarize --file 2
+nerd_notes.py summarize --file 2
 ```
 
 or
 
 ```bash
-python nerd_notes.py summarize --file "2025-02-08-Meeting-Notes.md"
+nerd_notes.py summarize --file "2025-02-08-Meeting-Notes.md"
 ```
 
 #### Git Sync
@@ -150,13 +150,13 @@ Synchronize your notes with a remote Git repository. The sync command will:
 - Commit and push local changes
 
 ```bash
-python nerd_notes.py sync
+nerd_notes.py sync
 ```
 
 Optionally, override the remote URL with:
 
 ```bash
-python nerd_notes.py sync --repo https://github.com/yourusername/notes-repo.git
+nerd_notes.py sync --repo https://github.com/yourusername/notes-repo.git
 ```
 
 #### Settings
@@ -166,31 +166,31 @@ View or update configuration settings. If no options are provided, the current s
 - **Set the Notes Directory:**
 
   ```bash
-  python nerd_notes.py settings --path "~/Documents/CustomNotes"
+  nerd_notes.py settings --path "~/Documents/CustomNotes"
   ```
 
 - **Set the Default Editor:**
 
   ```bash
-  python nerd_notes.py settings --editor vim
+  nerd_notes.py settings --editor vim
   ```
 
 - **Set the OpenAI API Token:**
 
   ```bash
-  python nerd_notes.py settings --token YOUR_OPENAI_API_TOKEN
+  nerd_notes.py settings --token YOUR_OPENAI_API_TOKEN
   ```
 
 - **Set the Remote Git Repository URL:**
 
   ```bash
-  python nerd_notes.py settings --git  <YOUR_REPO_URL>
+  nerd_notes.py settings --git  <YOUR_REPO_URL>
   ```
 
 To view your current settings:
 
 ```bash
-python nerd_notes.py settings
+nerd_notes.py settings
 ```
 
 ## Contributing
