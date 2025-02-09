@@ -1,4 +1,4 @@
-```markdown
+
 # Nerd Notes CLI
 
 **Nerd Notes CLI** is a command-line tool designed for managing Markdown notes using an efficient, customizable workflow. It provides a standardized note template, tagging and filtering capabilities, Markdown viewing with Rich rendering, automated summarization powered by OpenAI's GPT-4, and seamless synchronization with a remote Git repository.
@@ -188,13 +188,9 @@ python cli.py settings
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request with your improvements. If you encounter issues or have suggestions, feel free to open an issue on the GitHub repository.
+Contributions are welcome! If you encounter issues or have suggestions, feel free to open an issue on the GitHub repository.
 
 ## License
 
 This project is licensed under the MIT License.
 
----
-
-Enjoy using Nerd Notes CLI to streamline your note-taking and keep your work synchronized across devices!
-```
