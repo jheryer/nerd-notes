@@ -56,3 +56,13 @@ def set_editor(editor_command):
     settings["editor"] = editor_command
     save_settings(settings)
     print(f"Default editor updated to: {editor_command}")
+
+
+def set_openai_token(token):
+    """
+    Updates the settings with the OpenAI API token.
+    """
+    settings = load_settings()
+    settings["openai_token"] = token
+    save_settings(settings)
+    print("OpenAI API token set.")

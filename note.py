@@ -4,6 +4,9 @@ import re
 import subprocess
 
 import frontmatter
+import openai
+from rich.console import Console
+from rich.markdown import Markdown
 
 
 def sanitize_title(title):
@@ -57,7 +60,8 @@ def create_note(title, tags, notes_dir):
     print(f"Note created: {filepath}")
 
 
-def open_note(note_input, notes_dir, editor):
+def get_note_file(note_input, notes_dir) -> str:
+
     note_file = None
 
     if note_input.isdigit():
@@ -65,7 +69,8 @@ def open_note(note_input, notes_dir, editor):
         files = get_note_files(notes_dir)
         if index < 0 or index > len(files):
             print("Invalid note index.")
-            return
+            return ""
+
         note_input = files[index - 1]
         note_file = os.path.join(notes_dir, files[index])
     else:
@@ -73,11 +78,32 @@ def open_note(note_input, notes_dir, editor):
         if not os.path.isabs(note_input):
             note_input = os.path.join(notes_dir, note_input)
 
+    return note_file
+
+
+def open_note(note_input, notes_dir, editor):
+    """
+    Open or views a note.
+    """
+    note_file = get_note_file(note_input, notes_dir)
+
     if not os.path.exists(note_file):
         print(f"Note file not found: {note_input}")
         return
 
-    subprocess.run([editor, note_file])
+    if editor is None:
+        try:
+            with open(note_file, "r", encoding="utf-8") as f:
+                content = f.read()
+        except Exception as e:
+            print(f"Error reading note file: {e}")
+            return
+
+        console = Console()
+        markdown = Markdown(content)
+        console.print(markdown)
+    else:
+        subprocess.run([editor, note_file])
 
 
 def list_notes(notes_dir):
@@ -163,3 +189,87 @@ def filter_notes_by_tags(notes_dir, required_tags):
             except Exception as e:
                 print(f"Error reading {filepath}: {e}")
     return sorted(matching_notes)
+
+
+def extract_section(content, section_title):
+    """
+    Extracts and returns the text of a given section from the markdown content.
+    """
+    pattern = rf"^#\s*{re.escape(section_title)}\s*\n(.*?)(?=\n#|\Z)"
+    match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+    return ""
+
+
+def update_section(content, section_title, new_text):
+    """
+    Updates the specified section with new_text and returns the updated content.
+    """
+    pattern = rf"(^#\s*{re.escape(section_title)}\s*\n)(.*?)(?=\n#|\Z)"
+    replacement = rf"\1{new_text}\n"
+    new_content, count = re.subn(
+        pattern, replacement, content, flags=re.DOTALL | re.MULTILINE
+    )
+    if count == 0:
+        new_content = content + f"\n# {section_title}\n{new_text}\n"
+    return new_content
+
+
+def summarize_note_file(note_file, openai_token):
+    """
+    Uses OpenAI's API to summarize the note based on its Raw Notes, Processing, and Connecting sections.
+    The summary and action items are then placed in the Summary section.
+    """
+    try:
+        with open(note_file, "r", encoding="utf-8") as f:
+            content = f.read()
+    except Exception as e:
+        print(f"Error reading note file: {e}")
+        return None
+
+    raw_notes = extract_section(content, "Raw Notes")
+    processing = extract_section(content, "Processing")
+    connecting = extract_section(content, "Connecting")
+
+    prompt = (
+        "Summarize the following sections and outline any action items mentioned:\n\n"
+        f"Raw Notes:\n{raw_notes}\n\n"
+        f"Processing:\n{processing}\n\n"
+        f"Connecting:\n{connecting}\n\n"
+        "Please provide a concise summary and list of action items."
+        "Provide any additional context or insights as needed."
+        "Record decisions made, who made them, and the rationale behind them."
+        "Note agreed-upon follow-up meetings or checkpoints."
+        "Describe the client's expressed needs, challenges, and goals."
+        "Detail potential solutions discussed to address action items."
+        "Outline next steps for the meeting, including any documents or information to be exchanged."
+    )
+
+    openai.api_key = openai_token
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that summarizes notes and extracts action items.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=1500,
+        )
+        summary_text = response.choices[0].message.content
+    except Exception as e:
+        print("Error calling OpenAI API:", e)
+        return None
+
+    new_content = update_section(content, "Summary", summary_text)
+    try:
+        with open(note_file, "w", encoding="utf-8") as f:
+            f.write(new_content)
+    except Exception as e:
+        print(f"Error writing updated note file: {e}")
+        return None
+
+    return summary_text

@@ -1,8 +1,9 @@
 import argparse
 
-from config import DEFAULT_NOTES_DIR, load_settings, set_editor, set_notes_path
-from note import (create_note, filter_notes_by_tags, get_note_files,
-                  list_all_tags, list_notes, open_note)
+from config import (DEFAULT_NOTES_DIR, load_settings, set_editor,
+                    set_notes_path, set_openai_token)
+from note import (create_note, filter_notes_by_tags, get_note_file,
+                  list_all_tags, list_notes, open_note, summarize_note_file)
 
 
 def main():
@@ -65,6 +66,31 @@ def main():
         "--file", type=str, required=True, help="Filename of the note to open"
     )
 
+    parser_view = subparsers.add_parser(
+        "view", help="View a note in the CLI with markdown rendering"
+    )
+    parser_view.add_argument(
+        "--file",
+        type=str,
+        required=True,
+        help="Filename or index number of the note to view",
+    )
+
+    parser_summarize = subparsers.add_parser(
+        "summarize", help="Summarize a note and update its Summary section"
+    )
+    parser_summarize.add_argument(
+        "--file",
+        type=str,
+        required=True,
+        help="Filename or index number of the note to summarize",
+    )
+
+    parser_settoken = subparsers.add_parser("settoken", help="Set the OpenAI API token")
+    parser_settoken.add_argument(
+        "--token", type=str, required=True, help="OpenAI API token"
+    )
+
     args = parser.parse_args()
 
     if args.command == "new":
@@ -75,6 +101,8 @@ def main():
         set_notes_path(args.path)
     elif args.command == "seteditor":
         set_editor(args.editor)
+    elif args.command == "settoken":
+        set_openai_token(args.token)
     elif args.command == "tags":
         all_tags = list_all_tags(notes_dir)
         if all_tags:
@@ -94,11 +122,39 @@ def main():
     elif args.command == "open":
         settings = load_settings()
         editor = settings.get("editor")
+
         if not editor:
             print("No default editor set. Use the 'seteditor' command to set one.")
             return
+
         note_file = args.file
         open_note(note_file, notes_dir, editor)
+
+    elif args.command == "view":
+        note_file = args.file
+        open_note(note_file, notes_dir, None)
+    elif args.command == "summarize":
+        note_input = args.file
+        settings = load_settings()
+        openai_token = settings.get("openai_token")
+
+        if not openai_token:
+            print("No OpenAI API token set. Use the 'settoken' command to set one.")
+            return
+
+        note_file = get_note_file(note_input, notes_dir)
+
+        if not note_file:
+            print("Note not found.")
+            return
+
+        summary = summarize_note_file(note_file, openai_token)
+
+        if summary:
+            print("Summary updated successfully:")
+            print(summary)
+        else:
+            print("Failed to generate summary.")
 
 
 if __name__ == "__main__":
