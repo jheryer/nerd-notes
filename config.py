@@ -2,17 +2,12 @@ import os
 
 import yaml
 
-# Define the default configuration directory and file.
 CONFIG_DIR = os.path.expanduser("~/.nerd_notes")
 SETTINGS_FILE = os.path.join(CONFIG_DIR, "settings.yaml")
 DEFAULT_NOTES_DIR = os.path.join(CONFIG_DIR, "notes")
 
 
 def load_settings():
-    """
-    Loads settings from the SETTINGS_FILE.
-    If the file (or config directory) doesn't exist, it creates them with default settings.
-    """
     if not os.path.exists(CONFIG_DIR):
         os.makedirs(CONFIG_DIR)
     if not os.path.exists(SETTINGS_FILE):
@@ -27,18 +22,20 @@ def load_settings():
 
 
 def save_settings(settings):
-    """
-    Saves the settings dictionary to the SETTINGS_FILE.
-    """
     with open(SETTINGS_FILE, "w") as f:
         yaml.dump(settings, f)
 
 
+def print_config(settings):
+    print("Current settings:")
+    print(f"  Notes Directory: {settings.get('notes_dir')}")
+    print(f"  Default Editor: {settings.get('editor') or '(not set)'}")
+    print(f"  Git Remote: {settings.get('git_remote') or '(not set)'}")
+    token_status = "set" if settings.get("openai_token") else "not set"
+    print(f"  OpenAI Token: ({token_status})")
+
+
 def set_notes_path(new_path):
-    """
-    Updates the settings with a new notes directory path.
-    The new directory is created if it doesn't exist.
-    """
     new_path = os.path.expanduser(new_path)
     if not os.path.exists(new_path):
         os.makedirs(new_path)
@@ -49,9 +46,6 @@ def set_notes_path(new_path):
 
 
 def set_editor(editor_command):
-    """
-    Updates the settings with the default editor command.
-    """
     settings = load_settings()
     settings["editor"] = editor_command
     save_settings(settings)
@@ -59,10 +53,14 @@ def set_editor(editor_command):
 
 
 def set_openai_token(token):
-    """
-    Updates the settings with the OpenAI API token.
-    """
     settings = load_settings()
     settings["openai_token"] = token
     save_settings(settings)
     print("OpenAI API token set.")
+
+
+def set_git_remote(remote):
+    settings = load_settings()
+    settings["git_remote"] = remote
+    save_settings(settings)
+    print("git remote url set.")
