@@ -260,6 +260,23 @@ def summarize_note_file(note_file, openai_token):
         "Outline next steps for the meeting, including any documents or information to be exchanged."
     )
 
+    summary_text = get_openai_response(prompt, openai_token)
+    new_content = update_section(content, "Summary", summary_text)
+
+    try:
+        with open(note_file, "w", encoding="utf-8") as f:
+            f.write(new_content)
+    except Exception as e:
+        print(f"Error writing updated note file: {e}")
+        return None
+
+    return summary_text
+
+
+def get_openai_response(prompt, openai_token):
+    """
+    Uses OpenAI's API to get a response based on the provided prompt.
+    """
     openai.api_key = openai_token
     try:
         response = openai.chat.completions.create(
@@ -273,17 +290,7 @@ def summarize_note_file(note_file, openai_token):
             ],
             max_tokens=2000,
         )
-        summary_text = response.choices[0].message.content
+        return response.choices[0].message.content
     except Exception as e:
         print("Error calling OpenAI API:", e)
         return None
-
-    new_content = update_section(content, "Summary", summary_text)
-    try:
-        with open(note_file, "w", encoding="utf-8") as f:
-            f.write(new_content)
-    except Exception as e:
-        print(f"Error writing updated note file: {e}")
-        return None
-
-    return summary_text
