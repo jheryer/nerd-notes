@@ -121,9 +121,7 @@ def main():
         matching_notes = filter_notes_by_tags(notes_dir, args.tags)
 
         if matching_notes:
-            print(f"Notes containing the tags {args.tags}:")
-            for note in matching_notes:
-                print(f"- {note}")
+            list_notes(notes_dir, matching_notes)
         else:
             print(f"No notes found with tags {args.tags}.")
 
@@ -138,6 +136,7 @@ def main():
 
         note_file = args.file
         open_note(note_file, notes_dir, editor)
+
     elif args.command == "view":
 
         note_file = args.file
@@ -166,6 +165,7 @@ def main():
             print(summary)
         else:
             print("Failed to generate summary.")
+
     elif args.command == "sync":
 
         repo = args.repo if args.repo else settings.get("git_remote")

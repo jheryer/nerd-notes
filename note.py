@@ -106,7 +106,7 @@ def open_note(note_input, notes_dir, editor):
         subprocess.run([editor, note_file])
 
 
-def list_notes(notes_dir):
+def list_notes(notes_dir, filtered_notes=None):
     """
     Lists all Markdown files in the specified notes directory.
     """
@@ -117,6 +117,8 @@ def list_notes(notes_dir):
     else:
         print("Notes in repository:")
         for index, file in enumerate(files, start=1):
+            if filtered_notes is not None and file in filtered_notes:
+                continue
             print(f"{index} {file}")
 
 
