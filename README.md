@@ -32,7 +32,7 @@
 
 ```
 nerd_notes/
-├── cli.py         # Main command-line interface
+├── nerd_notes.py         # Main command-line interface
 ├── config.py      # Configuration module (manages settings)
 ├── note.py        # Note operations (create, list, summarize, etc.)
 ├── sync.py        # Git synchronization module (init, pull, push)
@@ -67,7 +67,7 @@ nerd_notes/
 Run the CLI tool using Python:
 
 ```bash
-python cli.py <command> [options]
+python nerd_notes.py <command> [options]
 ```
 
 ### Commands
@@ -77,7 +77,7 @@ python cli.py <command> [options]
 Creates a new Markdown note with an optional list of tags.
 
 ```bash
-python cli.py new --title "Meeting Notes" --tags meeting project
+python nerd_notes.py new --title "Meeting Notes" --tags meeting project
 ```
 
 #### List All Notes
@@ -85,7 +85,7 @@ python cli.py new --title "Meeting Notes" --tags meeting project
 Lists all notes in your repository with index numbers.
 
 ```bash
-python cli.py list
+python nerd_notes.py list
 ```
 
 #### Open a Note
@@ -95,13 +95,13 @@ Opens a note in your default editor. You can specify the note by filename or by 
 - By filename:
 
   ```bash
-  python cli.py open --file "2025-02-08-Meeting-Notes.md"
+  python nerd_notes.py open --file "2025-02-08-Meeting-Notes.md"
   ```
 
 - By index number:
 
   ```bash
-  python cli.py open --file 3
+  python nerd_notes.py open --file 3
   ```
 
 #### View a Note
@@ -109,13 +109,13 @@ Opens a note in your default editor. You can specify the note by filename or by 
 Displays the note with Markdown rendering in your terminal using Rich.
 
 ```bash
-python cli.py view --file 2
+python nerd_notes.py view --file 2
 ```
 
 or
 
 ```bash
-python cli.py view --file "2025-02-08-Meeting-Notes.md"
+python nerd_notes.py view --file "2025-02-08-Meeting-Notes.md"
 ```
 
 #### Summarize a Note
@@ -125,13 +125,13 @@ Uses OpenAI GPT-4 to generate a summary and action items from the **Raw Notes**,
 > **Note:** Before summarizing, set your OpenAI API token using the settings command.
 
 ```bash
-python cli.py summarize --file 2
+python nerd_notes.py summarize --file 2
 ```
 
 or
 
 ```bash
-python cli.py summarize --file "2025-02-08-Meeting-Notes.md"
+python nerd_notes.py summarize --file "2025-02-08-Meeting-Notes.md"
 ```
 
 #### Git Sync
@@ -143,13 +143,13 @@ Synchronize your notes with a remote Git repository. The sync command will:
 - Commit and push local changes
 
 ```bash
-python cli.py sync
+python nerd_notes.py sync
 ```
 
 Optionally, override the remote URL with:
 
 ```bash
-python cli.py sync --repo https://github.com/yourusername/notes-repo.git
+python nerd_notes.py sync --repo https://github.com/yourusername/notes-repo.git
 ```
 
 #### Settings
@@ -159,31 +159,31 @@ View or update configuration settings. If no options are provided, the current s
 - **Set the Notes Directory:**
 
   ```bash
-  python cli.py settings --path "~/Documents/CustomNotes"
+  python nerd_notes.py settings --path "~/Documents/CustomNotes"
   ```
 
 - **Set the Default Editor:**
 
   ```bash
-  python cli.py settings --editor vim
+  python nerd_notes.py settings --editor vim
   ```
 
 - **Set the OpenAI API Token:**
 
   ```bash
-  python cli.py settings --token YOUR_OPENAI_API_TOKEN
+  python nerd_notes.py settings --token YOUR_OPENAI_API_TOKEN
   ```
 
 - **Set the Remote Git Repository URL:**
 
   ```bash
-  python cli.py settings --git  <YOUR_REPO_URL>
+  python nerd_notes.py settings --git  <YOUR_REPO_URL>
   ```
 
 To view your current settings:
 
 ```bash
-python cli.py settings
+python nerd_notes.py settings
 ```
 
 ## Contributing
