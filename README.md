@@ -1,7 +1,7 @@
 
 # Nerd Notes CLI
 
-**Nerd Notes CLI** is a command-line tool designed for managing Markdown notes using an efficient, customizable workflow. It provides a standardized note template, tagging and filtering capabilities, Markdown viewing with Rich rendering, automated summarization powered by OpenAI's GPT-4, and seamless synchronization with a remote Git repository.
+**Nerd Notes CLI** is a command-line tool designed for managing Markdown notes using an efficient, customizable workflow. It provides a standardized note template, tagging and filtering capabilities, Markdown viewing with Rich cli rendering, automated summarization using OpenAI, and synchronization with a remote Git repository.
 
 ## Features
 
@@ -23,10 +23,10 @@
   Automatically summarize the contents of a note by extracting the **Raw Notes**, **Processing**, and **Connecting** sections, and then using OpenAI's GPT-4 to generate a concise summary along with action items. The summary is automatically updated in the note's **Summary** section.
 
 - **Git Sync:**  
-  Synchronize your notes with a remote Git repository. The tool can initialize a Git repository if needed, set the remote URL, create a `.gitignore` to prevent sensitive files (e.g., `settings.yaml`) from being pushed, pull remote changes (to sync with other devices), and then commit and push local changes.
+  Synchronize your notes with a remote Git repository. The tool can initialize a Git repository if needed, set the remote URL, pull remote changes (to sync with other devices), and then commit and push local changes.
 
 - **Consolidated Settings:**  
-  Configure your tool with a single `settings` command. You can update the notes directory, default editor, OpenAI API token, and remote Git repository URL. Settings are stored persistently in `~/.nerd_notes/settings.yaml`.
+  Configure your tool with a single `settings` command. You can update the notes directory, default editor, OpenAI API token, and remote Git repository URL. Default settings are stored in `~/.nerd_notes/settings.yaml`.
 
 ## Project Structure
 
@@ -188,7 +188,7 @@ python cli.py settings
 
 ## Contributing
 
-Contributions are welcome! If you encounter issues or have suggestions, feel free to open an issue on the GitHub repository.
+Contributions are welcome. If you encounter issues or have suggestions, feel free to open an issue on the GitHub repository.
 
 ## License
 
