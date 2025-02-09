@@ -62,6 +62,13 @@ nerd_notes/
    pip install PyYAML python-frontmatter rich openai
    ```
 
+  Run tests:
+ 
+  ```bash
+  python -m unittest
+  ```
+
+
 ## Usage
 
 Run the CLI tool using Python:
